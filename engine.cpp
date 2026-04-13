@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <conio.h>
 
 std::string xspan = "";
 int main()
@@ -11,6 +12,10 @@ int main()
 int width = 256; //start map generation
 int height = 256;
 int index = 0;
+int screenx = 50; //screen width in characters
+int camx = 0;
+int camy = 0;
+int screeny = 25;
 
 std::vector<int> map(width * height, 0);
 for (size_t i = 0; i < map.size(); i++)
@@ -21,46 +26,56 @@ for (size_t i = 0; i < map.size(); i++)
 std::cout << "Entered Realm\n"; //start
     while (true) 
     {
-        system("cls");
-        // for (size_t i = 0; i < 25; i++) // for 20 times render terminal
-        // {  
-        //     //generate string
-        //     xspan = "";
-        //         for (size_t i2 = 0; i2 < 50; i2++) 
-        //         {
-        //             index++;
-        //             int value = map[index];
 
-        //             if (value == 0) //you can also use █ instead of #, but most terminals dont support it
-        //             {
-        //                     xspan += "\033[32m#\033[0m"; //green
-        //                 } 
-        //                 else {
-        //                     xspan += "\033[34m~\033[0m"; //blue
-        //             }
-        //         }
-                for (int y = 0; y < 25; y++) {
+    system("cls"); //clear render screen
+    
+    if (_kbhit())
+    {
+    char key = _getch();
+        if (key == 'd')
+        {
+            camx += 1;
+        }
+        if (key == 'a')
+        {
+            camx -= 1;
+        }
+        if (key == 'w')
+        {
+            camy -= 1;
+        }
+        if (key == 's')
+        {
+            camy += 1;
+        }
+    }
+
+
+            for (int y = camy; y < screeny + camy; y++) {
                 std::string xspan = "";  // X SPAN
-            for (int x = 0; x < 50; x++) {
 
-                int index = (y * width + x);
+            for (int x = camx; x < screenx + camx; x++) 
+        {
 
-                int value = map[index];
-                    if (value == 0) //you can also use █ instead of #, but most terminals dont support it
-                        {
-                                xspan += "\033[32m#\033[0m"; //green
-                            } 
-                            else {
-                                xspan += "\033[34m~\033[0m"; //blue
-                        }  
+           int index = (y * width + x);
+
+           int value = map[index];
+                if (value == 0)
+                    {
+                    xspan += "\033[32m#\033[0m"; //grass
+                    } 
+
+               else {
+                    xspan += "\033[34m~\033[0m"; //water
+                    }  
             }
             //generate string end
-        xspan += '!';
+        //xspan += '!';
         std::cout << xspan << "\n";
         
         } //end rendering
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     } //ends while true
 return 0;
 }
